@@ -1,6 +1,8 @@
 import Fs from 'node:fs'
+import Path from 'node:path'
 import Zlib from 'node:zlib'
 import Stream from 'node:stream'
+import { execFileSync } from 'node:child_process'
 import C from './util/common.js'
 import { unpackTar } from 'modern-tar/fs'
 
@@ -23,3 +25,9 @@ await Promise.all([
 	download(`https://ffmpeg.org/releases/ffmpeg-${C.version}.tar.gz`, C.dir.ffmpeg),
 	download(`https://github.com/videolan/dav1d/archive/refs/tags/${C.dav1dVersion}.tar.gz`, C.dir.dav1d),
 ])
+
+console.log("apply dav1d.patch")
+execFileSync('git', [ 'apply', Path.join(C.dir.root, 'dav1d.patch') ], {
+	stdio: 'inherit',
+	cwd: C.dir.dav1d,
+})
