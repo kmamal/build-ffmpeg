@@ -2,62 +2,10 @@ name: Build and upload
 
 on: workflow_dispatch
 
-permissions:
-  contents: write
-
 jobs:
-  build:
-    name: ${{ matrix.platform.name }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - { name: 'Linux (x64)'     ,os: ubuntu-22.04                   }
-          - { name: 'Linux (arm64)'   ,os: ubuntu-22.04-arm               }
-          - { name: 'Windows (x64)'   ,os: windows-2022     ,msvc: x64    }
-          - { name: 'Windows (arm64)' ,os: windows-11-arm   ,msvc: arm64  }
-          - { name: 'Mac (x64)'       ,os: macos-15         ,arch: x64    }
-          - { name: 'Mac (arm64)'     ,os: macos-15         ,arch: arm64  }
-
-    runs-on: ${{ matrix.platform.os }}
-
+  empty:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - run: 'echo "empty"'
 
-      - if: ${{ startsWith(matrix.platform.os, 'macos-') }}
-        run: brew update && ./scripts/install-deps-mac.sh
-
-      - if: ${{ startsWith(matrix.platform.os, 'ubuntu-') }}
-        run: sudo apt-get update && sudo ./scripts/install-deps-ubuntu.sh
-
-      - if: ${{ startsWith(matrix.platform.os, 'macos-') || startsWith(matrix.platform.os, 'ubuntu-') }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CROSS_COMPILE_ARCH: ${{ matrix.platform.arch }}
-        run: npm run release
-
-      - if: ${{ startsWith(matrix.platform.os, 'windows-') }}
-        run: python -m pip install meson ninja
-
-      - if: ${{ startsWith(matrix.platform.os, 'windows-') }}
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.platform.msvc }}
-
-      - if: ${{ startsWith(matrix.platform.os, 'windows-') }}
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MSYS
-          path-type: inherit
-          update: true
-
-      - if: ${{ startsWith(matrix.platform.os, 'windows-') }}
-        shell: msys2 {0}
-        run: ./scripts/install-deps-windows.sh
-
-      - if: ${{ startsWith(matrix.platform.os, 'windows-') }}
-        shell: msys2 {0}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run release
+# This file is empty on the master branch. Releases are made from the 'workflow' branch.
