@@ -1,14 +1,11 @@
 {
-  "version": "9.0.2-1",
-  "name": "@kmamal/build-ffmpeg",
-  "description": "build-ffmpeg",
+  "private": true,
+  "version": "9.0.2",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:kmamal/build-ffmpeg.git"
   },
   "scripts": {
-    "install": "cd scripts && node install.mjs",
-    "download-release": "cd scripts && node download-release.mjs",
     "build": "cd scripts && node build.mjs",
     "download-sources": "cd scripts && node download-sources.mjs",
     "make-dav1d": "cd scripts && node make-dav1d.mjs",

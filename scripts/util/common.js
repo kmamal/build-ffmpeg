@@ -12,14 +12,10 @@ dir.publish = Path.join(dir.root, 'publish')
 
 const pkgPath = Path.join(dir.root, 'package.json')
 const pkg = JSON.parse(Fs.readFileSync(pkgPath).toString())
-// The package version is the upstream version plus a "-N" packaging suffix
-const hyphenIndex = pkg.version.indexOf('-')
-const version = hyphenIndex === -1 ? pkg.version : pkg.version.slice(0, hyphenIndex)
+const { version } = pkg
 const dav1dVersion = pkg.config.dav1d
 const [ , owner, repo ] = pkg.repository.url.match(/([^/:]+)\/([^/]+)\.git$/u)
 
-const isSet = (value) => ![ undefined, '', '0', 'false' ].includes(value)
-const fromSource = isSet(process.env.BUILD_FFMPEG_FROM_SOURCE)
 
 const { platform, arch } = process
 const targetArch = process.env.CROSS_COMPILE_ARCH || arch
@@ -90,9 +86,7 @@ const protocols = [ 'file' ]
 module.exports = {
 	dir,
 	version,
-	isPrerelease: false,
 	dav1dVersion,
-	fromSource,
 	owner,
 	repo,
 	platform,
